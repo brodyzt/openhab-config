@@ -1,0 +1,87 @@
+import java.net.URL
+import org.omg.CORBA.Request
+import javax.xml.ws.spi.http.HttpHandler
+
+rule "Normal Mode"
+	when
+		Item NormalMode received command
+	then
+		if(receivedCommand == ON) {
+			var refreshToken = executeCommandLine("./scripts/getSpotifyToken.sh", 5000).split("\n").get(3)
+			
+			executeCommandLine("./scripts/pause.sh " + refreshToken)
+			sendCommand(LightsOn, ON)
+			sendCommand(LEDColor, "0,0,100")
+			sendCommand(Monitors, ON)
+		}
+end
+
+rule "Party Mode"
+	when
+		Item PartyMode received command
+	then
+		if(receivedCommand == ON) {
+			var refreshToken = executeCommandLine("./scripts/getSpotifyToken.sh", 5000).split("\n").get(3)
+			var playlistUser = "121198114" //My user ID
+			var playlistId = "05d1XHNa5bWaGsYBCLx8Nw" // Liked From Radio Playlist
+			
+			sendCommand(EchoVolume, 60)
+			executeCommandLine("./scripts/shufflePlaylist.sh " + refreshToken + " " + playlistUser + " " + playlistId)
+			
+			sendCommand(FadeSpeed, 23)
+			sendCommand(LightsOn, ON)
+			sendCommand(IsFading, ON)
+		}
+		if(receivedCommand == OFF) {
+			var refreshToken = executeCommandLine("./scripts/getSpotifyToken.sh", 5000).split("\n").get(3)
+			
+			executeCommandLine("./scripts/pause.sh " + refreshToken)
+			
+			sendCommand(LEDColor, "0,0,100")
+		}
+end
+
+rule "Sleep Mode"
+	when 
+		Item SleepMode received command
+	then
+		if(receivedCommand == ON) {
+			var refreshToken = executeCommandLine("./scripts/getSpotifyToken.sh", 5000).split("\n").get(3)
+			var playlistUser = "spotify"
+			var playlistId = "37i9dQZF1DXdCsscAsbRNz" //PEACE Playlist
+			
+			sendCommand(IsFading, OFF)
+			sendCommand(IsFlashing, OFF)
+			sendCommand(LightsOn, OFF)
+			sendCommand(Monitors, OFF)
+			
+			
+			sendCommand(EchoVolume, 25)
+			executeCommandLine("./scripts/shufflePlaylist.sh " + refreshToken + " " + playlistUser + " " + playlistId)
+			
+		}
+end
+
+rule "Alarm Mode"
+	when 
+		Item AlarmMode received command
+	then
+		if(receivedCommand == ON) {
+			var refreshToken = executeCommandLine("./scripts/getSpotifyToken.sh", 5000).split("\n").get(3)
+			var playlistUser = "121198114" //My user ID
+			var playlistId = "05d1XHNa5bWaGsYBCLx8Nw" // Liked From Radio Playlist
+			
+			sendCommand(EchoVolume, 40)
+			executeCommandLine("./scripts/shufflePlaylist.sh " + refreshToken + " " + playlistUser + " " + playlistId)
+			
+			sendCommand(FlashSpeed, 50)
+			sendCommand(IsFlashing, ON)
+			sendCommand(LightsOn, ON)
+		}
+		if (receivedCommand == OFF) {
+			var refreshToken = executeCommandLine("./scripts/getSpotifyToken.sh", 5000).split("\n").get(3)
+			
+			executeCommandLine("./scripts/pause.sh " + refreshToken)
+			sendCommand(LEDColor, "0,0,100")
+		}
+end

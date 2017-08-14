@@ -1,0 +1,93 @@
+
+
+rule "get RGB Colors from ColorItem"
+	when
+		Item LEDColor received update
+	then
+		val red = "" + (LEDColor.state as HSBType).red * 2.55
+		var green = "" + (LEDColor.state as HSBType).green * 2.55
+		var blue = "" + (LEDColor.state as HSBType).blue * 2.55
+		sendCommand(IsFading, OFF)
+		sendCommand(IsFlashing, OFF)
+		
+		logInfo("openHab", "" + red)
+		sendHttpPutRequest("http://192.168.50.11:5000/setColor", "application/json", String::format("{\"red\": %1$s,\"green\": %2$s,\"blue\": %3$s}", red, green, blue))
+		
+end
+
+rule "LightsChanged"
+	when
+		Item LightsOn received command
+	then
+		if(receivedCommand == ON) {
+			sendHttpPutRequest("http://192.168.50.11:5000/turnOn")
+		} 
+		if(receivedCommand == OFF) {
+			sendHttpPutRequest("http://192.168.50.11:5000/turnOff")
+		} 
+end
+
+rule "FadeRule"
+	when
+		Item IsFading received command
+	then
+		if(receivedCommand == ON) {
+			sendCommand(IsFlashing, OFF)
+			sendHttpPutRequest("http://192.168.50.11:5000/fade")
+		} 
+		if(receivedCommand == OFF) {
+			sendHttpPutRequest("http://192.168.50.11:5000/stopFade")
+		} 
+end
+
+rule "UpdateFadeRule"
+	when
+		Item FadeSpeed received update
+	then
+		sendHttpPutRequest("http://192.168.50.11:5000/updateFadeSpeed", "application/json", String::format("{\"STEPS\": %1$s}", FadeSpeed.state))
+		
+end
+
+
+
+rule "FlashRule"
+	when
+		Item IsFlashing received command
+	then
+		if(receivedCommand == ON) {
+			sendCommand(IsFading, OFF)
+			sendHttpPutRequest("http://192.168.50.11:5000/flash")
+		} 
+		if(receivedCommand == OFF) {
+			sendHttpPutRequest("http://192.168.50.11:5000/stopFlash")
+		} 
+end
+
+rule "UpdateFadeRule"
+	when
+		Item FlashSpeed received update
+	then
+		sendHttpPutRequest("http://192.168.50.11:5000/updateFlashSpeed", "application/json", String::format("{\"FLASH_SPEED\": %1$s}", FlashSpeed.state))
+		
+end
+
+rule "Broadcast Devices to Echo"
+	when
+		Item BroadcastDevices received command
+	then
+		if(receivedCommand == ON) {
+			executeCommandLine("java -jar alexa-bridge.jar")
+		}
+end
+
+
+
+rule "Change Echo Volume"
+	when
+		Item EchoVolume received update
+	then
+		var refreshToken = executeCommandLine("./scripts/getSpotifyToken.sh", 5000).split("\n").get(3)
+		var volume = (EchoVolume.state as DecimalType).intValue
+		executeCommandLine("./scripts/setEchoVolume.sh " + refreshToken + " " + volume)
+		logInfo("openHab", executeCommandLine("pwd", 5000))
+end
