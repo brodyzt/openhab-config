@@ -92,6 +92,8 @@ rule "Exit Mode"
 			
 			executeCommandLine("./scripts/pause.sh " + refreshToken)
 			
+			sendCommand(IsFading, OFF)
+			sendCommand(IsFlashing, OFF)
 			sendCommand(LightsOn, OFF)
 			sendCommand(Monitors, OFF)
 		}
