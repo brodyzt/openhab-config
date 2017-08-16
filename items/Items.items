@@ -2,8 +2,10 @@
 //itemtype itemname ["labeltext"] [<iconname>] [(group1, group2, ...)] [["tag1", "tag2", ...]] [{bindingconfig}]
 //Number LivingRoom_Temperature "The Temperature is [%.1f °C]" <temperature> (gTemperature, gLivingRoom) ["TargetTemperature"] {knx="1/0/15+0/0/15"}
 
+//Light Color/Brightness
 Color LEDColor "Hue" <lights>  ["Lighting"]
 Switch LightsOn "Lights" ["Lighting"]
+Dimmer DimmerDevice "Dimmer"
 
 
 //Changing Light Speeds
@@ -17,6 +19,8 @@ Switch NormalMode "Normal Mode" <modes> ["Switchable"]
 Switch PartyMode "Party Mode" <modes> ["Switchable"]
 Switch SleepMode "Sleep Mode" <modes> ["Switchable"]
 Switch AlarmMode "Alarm Mode" <modes> ["Switchable"]
+Switch ExitMode "Exit Mode" <modes> ["Switchable"]
+
 
 Switch Monitors {channel="wemo:socket:Socket-1_0-221709K0100D21:state"}
 

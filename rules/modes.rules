@@ -1,6 +1,3 @@
-import java.net.URL
-import org.omg.CORBA.Request
-import javax.xml.ws.spi.http.HttpHandler
 
 rule "Normal Mode"
 	when
@@ -83,5 +80,18 @@ rule "Alarm Mode"
 			
 			executeCommandLine("./scripts/pause.sh " + refreshToken)
 			sendCommand(LEDColor, "0,0,100")
+		}
+end
+
+rule "Exit Mode"
+	when 
+		Item ExitMode received command
+	then
+		if(receivedCommand == ON) {
+			var refreshToken = executeCommandLine("./scripts/getSpotifyToken.sh", 5000).split("\n").get(3)
+			
+			executeCommandLine("./scripts/pause.sh " + refreshToken)
+			
+			sendCommand(LightsOn, OFF)
 		}
 end

@@ -91,3 +91,11 @@ rule "Change Echo Volume"
 		executeCommandLine("./scripts/setEchoVolume.sh " + refreshToken + " " + volume)
 		logInfo("openHab", executeCommandLine("pwd", 5000))
 end
+
+rule "UpdateDimmerRule"
+	when
+		Item DimmerDevice received update
+	then
+		sendHttpPutRequest("http://192.168.50.11:5000/updateDimmer", "application/json", String::format("{\"Dimmer\": %1$s}", DimmerDevice.state))
+		
+end
