@@ -27,6 +27,18 @@ rule "LightsChanged"
 		} 
 end
 
+rule "MonitorsChanged"
+	when
+		Item Monitors received command
+	then 
+		if(receivedCommand == ON) {
+			executeCommandLine("wemo --host 192.168.50.12 --action ON")
+		} 
+		if(receivedCommand == OFF) {
+			sendHttpPutRequest("wemo --host 192.168.50.12 --action OFF")
+		}
+end
+
 rule "FadeRule"
 	when
 		Item IsFading received command

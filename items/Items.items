@@ -22,7 +22,7 @@ Switch AlarmMode "Alarm Mode" <modes> ["Switchable"]
 Switch ExitMode "Exit Mode" <modes> ["Switchable"]
 
 
-Switch Monitors {channel="wemo:socket:Socket-1_0-221709K0100D21:state"}
+Switch Monitors 
 
 Switch BroadcastDevices "Broadcast Devices" ["Switchable"]
 
