@@ -35,7 +35,7 @@ rule "MonitorsChanged"
 			executeCommandLine("wemo --host 192.168.50.212 --action ON")
 		} 
 		if(receivedCommand == OFF) {
-			sendHttpPutRequest("wemo --host 192.168.50.212 --action OFF")
+			executeCommandLine("wemo --host 192.168.50.212 --action OFF")
 		}
 end
 
