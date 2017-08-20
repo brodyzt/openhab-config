@@ -32,10 +32,10 @@ rule "MonitorsChanged"
 		Item Monitors received command
 	then 
 		if(receivedCommand == ON) {
-			executeCommandLine("wemo --host 192.168.50.212 --action ON")
+			executeCommandLine("wemo --host 192.168.50.12 --action ON")
 		} 
 		if(receivedCommand == OFF) {
-			executeCommandLine("wemo --host 192.168.50.212 --action OFF")
+			executeCommandLine("wemo --host 192.168.50.12 --action OFF")
 		}
 end
 
